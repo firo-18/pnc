@@ -1,8 +1,6 @@
 package event
 
 import (
-	"log"
-
 	"github.com/bwmarrin/discordgo"
 	"github.com/firo-18/pnc/info"
 )
@@ -30,5 +28,4 @@ func fetchDolls() {
 		go DMu.Write(doll)
 		Classes[doll.Class] = append(Classes[doll.Class], doll)
 	}
-	log.Println(Classes)
 }

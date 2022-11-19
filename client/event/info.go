@@ -34,7 +34,7 @@ func init() {
 					err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 						Type: discordgo.InteractionResponseChannelMessageWithSource,
 						Data: &discordgo.InteractionResponseData{
-							Embeds: create.ClassEmbeds(s, &Meta, &class),
+							Embeds: create.ClassEmbeds(s, Classes, &class),
 						},
 					})
 					if err != nil {

@@ -113,7 +113,7 @@ func DollEmbedFields(doll *info.DollProfile, page *string) []*discordgo.MessageE
 }
 
 // ClassEmbeds creates a class embed discord respond on a specific Doll class.
-func ClassEmbeds(s *discordgo.Session, meta *info.MetaData, class *string) []*discordgo.MessageEmbed {
+func ClassEmbeds(s *discordgo.Session, classes map[string][]*info.DollProfile, class *string) []*discordgo.MessageEmbed {
 	desc := ""
 	switch *class {
 	case "Guard":
@@ -137,7 +137,7 @@ func ClassEmbeds(s *discordgo.Session, meta *info.MetaData, class *string) []*di
 				Text:    s.State.User.Username,
 				IconURL: s.State.User.AvatarURL(""),
 			},
-			Fields: ClassEmbedFields(meta, class),
+			Fields: ClassEmbedFields(classes[*class]),
 		},
 	}
 
@@ -145,26 +145,16 @@ func ClassEmbeds(s *discordgo.Session, meta *info.MetaData, class *string) []*di
 }
 
 // ClassEmbedFields populates and return a slice of embed fields for a specific Doll class.
-func ClassEmbedFields(meta *info.MetaData, class *string) []*discordgo.MessageEmbedField {
-	fields := []*discordgo.MessageEmbedField{
-		{
-			Name:   "Dolls",
-			Value:  "",
-			Inline: true,
-		},
-		{
-			Name:   "Rating",
-			Value:  "",
-			Inline: true,
-		},
-	}
-	// for k, v := range meta.Classes[*class] {
-	// 	fields[0].Value += k + "\n"
-	// 	fields[1].Value += v + "\n"
-	// }
+func ClassEmbedFields(dolls []*info.DollProfile) []*discordgo.MessageEmbedField {
+	fields := []*discordgo.MessageEmbedField{}
 
-	fields[0].Value = DiscordStyle(fields[0].Value)
-	fields[1].Value = DiscordStyle(fields[1].Value)
+	for _, doll := range dolls {
+		fields = append(fields, &discordgo.MessageEmbedField{
+			Name:   doll.Name,
+			Value:  DiscordStyle(doll.Analysis.Rating),
+			Inline: true,
+		})
+	}
 
 	return fields
 }
