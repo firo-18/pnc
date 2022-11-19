@@ -3,9 +3,6 @@ package info
 import (
 	"log"
 	"os"
-	"strings"
-	"sync"
-	"time"
 
 	"github.com/firo-18/pnc/api"
 	"gopkg.in/yaml.v3"
@@ -17,7 +14,6 @@ type DollProfile struct {
 	Name         string        `json:"name" yaml:"name"`
 	Class        string        `json:"class" yaml:"class"`
 	Birthday     string        `json:"birthday" yaml:"birthday"`
-	Release      time.Time     `json:"release" yaml:"release"`
 	Manufacturer string        `json:"manufacturer" yaml:"manufacturer"`
 	Career       string        `json:"career" yaml:"career"`
 	Voice        string        `json:"voice" yaml:"voice"`
@@ -60,11 +56,7 @@ type DollLink struct {
 	Ultimate string `json:"ultimate,omitempty" yaml:"ultimate,omitempty"`
 }
 
-type DollsMutex struct {
-	mu    sync.Mutex
-	Dolls map[string]*DollProfile
-}
-
+// NewDoll creates a new Doll with initial values, then return its address.
 func NewDoll() *DollProfile {
 	doll := &DollProfile{
 		Birthday:     "Classified",
@@ -84,7 +76,7 @@ func NewDoll() *DollProfile {
 	return doll
 }
 
-// ReadYAML implements a function to read a yaml file using Doll's name.
+// ReadYAML implements a function to read a local yaml file using Doll's name.
 func (d *DollProfile) ReadYAML(name string) {
 	file, err := os.ReadFile(path.DollData + name + ".yaml")
 	if err != nil {
@@ -115,9 +107,9 @@ func (d DollProfile) WriteYAML() {
 	}
 }
 
-// Lookup queries doll by filename.
-func (d *DollProfile) Lookup(filename string) error {
-	url := path.Root + path.DollData + filename
+// Lookup searchs for a Doll in database by name and return error, if any.
+func (d *DollProfile) Lookup(name string) error {
+	url := path.Root + path.DollData + name + ".yaml"
 
 	err := api.GetDecodeYAML(url, d)
 
@@ -133,44 +125,4 @@ func (d DollProfile) Verify() bool {
 		return false
 	}
 	return true
-}
-
-// UpdateStructure loops through all dolls' data and re-write to local an updated json.
-func UpdateStructure() {
-	files, err := os.ReadDir(path.DollData)
-	if err != nil {
-		log.Fatalln("read-dir:", err)
-	}
-
-	for _, file := range files {
-		if strings.HasSuffix(file.Name(), ".yaml") {
-			data, err := os.ReadFile(path.DollData + file.Name())
-			if err != nil {
-				log.Fatalln("read-file:", err)
-			}
-
-			doll := DollProfile{}
-			err = yaml.Unmarshal(data, &doll)
-			if err != nil {
-				log.Fatalln("unmarshal:", err)
-			}
-			doll.WriteYAML()
-		}
-	}
-}
-
-func (dm *DollsMutex) Write(doll *DollProfile) {
-	dm.mu.Lock()
-	defer dm.mu.Unlock()
-
-	dm.Dolls[doll.Name] = doll
-}
-
-func (dm *DollsMutex) Read(field string) (*DollProfile, bool) {
-	dm.mu.Lock()
-	defer dm.mu.Unlock()
-
-	v, ok := dm.Dolls[field]
-
-	return v, ok
 }

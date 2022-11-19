@@ -1,29 +1,34 @@
 package event
 
 import (
+	"log"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/firo-18/pnc/info"
 )
 
 var (
-	Meta    info.MetaData
-	DollsMu = info.DollsMutex{Dolls: map[string]*info.DollProfile{}}
 	Index   = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){}
+	DMu     = info.DollsMutex{Dolls: map[string]*info.DollProfile{}}
+	Classes = map[string][]*info.DollProfile{}
+	Meta    info.MetaData
 )
 
 func init() {
+	go Setup()
+}
+
+func Setup() {
 	Meta.Update()
 	fetchDolls()
 }
 
 func fetchDolls() {
-	for name := range Meta.Dolls {
-		go fetchDoll(name)
+	for _, name := range Meta.Dolls {
+		doll := info.NewDoll()
+		doll.Lookup(name)
+		go DMu.Write(doll)
+		Classes[doll.Class] = append(Classes[doll.Class], doll)
 	}
-}
-
-func fetchDoll(name string) {
-	doll := info.NewDoll()
-	doll.Lookup(name + ".yaml")
-	DollsMu.Write(doll)
+	log.Println(Classes)
 }

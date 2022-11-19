@@ -8,7 +8,6 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/firo-18/pnc/client/create"
-	"github.com/firo-18/pnc/info"
 )
 
 var (
@@ -50,7 +49,7 @@ func init() {
 
 			switch data.Options[0].Name {
 			case "doll":
-				for k := range Meta.Dolls {
+				for k := range DMu.Dolls {
 					if ok, _ := regexp.MatchString("(?i)"+choice, k); ok {
 						choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
 							Name:  k,
@@ -61,12 +60,14 @@ func init() {
 			case "class":
 				if len(data.Options[0].Options) > 1 {
 					choice = data.Options[0].Options[1].StringValue()
-					for k := range Meta.Classes[data.Options[0].Options[0].StringValue()] {
-						if ok, _ := regexp.MatchString("(?i)"+choice, k); ok {
-							choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
-								Name:  k,
-								Value: k,
-							})
+					for k, v := range DMu.Dolls {
+						if v.Class == data.Options[0].Options[0].StringValue() {
+							if ok, _ := regexp.MatchString("(?i)"+choice, k); ok {
+								choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
+									Name:  k,
+									Value: k,
+								})
+							}
 						}
 					}
 				}
@@ -93,8 +94,7 @@ func init() {
 func respondDollInfo(s *discordgo.Session, i *discordgo.InteractionCreate, name string) {
 	log.Printf("%v queried for doll: %v.", i.Member.User, name)
 
-	_, ok := Meta.Dolls[name]
-	if !ok {
+	if doll, ok := DMu.Read(name); !ok {
 		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
@@ -112,13 +112,6 @@ func respondDollInfo(s *discordgo.Session, i *discordgo.InteractionCreate, name 
 			log.Fatalln("interaction-respond:", err)
 		}
 	} else {
-		doll, ok := DollsMu.Read(name)
-		if !ok {
-			doll = info.NewDoll()
-			doll.Lookup(name)
-			DollsMu.Write(doll)
-		}
-
 		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{

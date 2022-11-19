@@ -31,7 +31,7 @@ func init() {
 		} else {
 			data := i.MessageComponentData()
 			name, page, _ := strings.Cut(data.Values[0], "__")
-			doll, _ := event.DollsMu.Read(name)
+			doll, _ := event.DMu.Read(name)
 
 			err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseUpdateMessage,

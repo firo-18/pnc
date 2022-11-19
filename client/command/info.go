@@ -2,10 +2,11 @@ package command
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/firo-18/pnc/info"
 )
 
 func init() {
-	Test = append(Test, &discordgo.ApplicationCommand{
+	Index = append(Index, &discordgo.ApplicationCommand{
 
 		Name:        "info",
 		Description: "Information databse for PNC.",
@@ -50,10 +51,9 @@ func init() {
 }
 
 func classesChoice() []*discordgo.ApplicationCommandOptionChoice {
-	classes := []string{"Guard", "Medic", "Sniper", "Specialist", "Warrior"}
 	choices := []*discordgo.ApplicationCommandOptionChoice{}
 
-	for _, class := range classes {
+	for _, class := range info.Classes {
 		choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
 			Name:  class,
 			Value: class,

@@ -158,10 +158,10 @@ func ClassEmbedFields(meta *info.MetaData, class *string) []*discordgo.MessageEm
 			Inline: true,
 		},
 	}
-	for k, v := range meta.Classes[*class] {
-		fields[0].Value += k + "\n"
-		fields[1].Value += v + "\n"
-	}
+	// for k, v := range meta.Classes[*class] {
+	// 	fields[0].Value += k + "\n"
+	// 	fields[1].Value += v + "\n"
+	// }
 
 	fields[0].Value = DiscordStyle(fields[0].Value)
 	fields[1].Value = DiscordStyle(fields[1].Value)

@@ -12,7 +12,7 @@ type Configuration struct {
 	GuildID  string `json:"guildID"`
 }
 
-func Load(filename string) Configuration {
+func Load(filename string) *Configuration {
 	config := Configuration{}
 	file, err := os.ReadFile(filename)
 	if err != nil {
@@ -24,5 +24,5 @@ func Load(filename string) Configuration {
 		log.Fatalln("unmarshal:", err)
 	}
 
-	return config
+	return &config
 }
