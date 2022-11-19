@@ -9,59 +9,37 @@ import (
 
 var (
 	Index                        = []*discordgo.ApplicationCommand{}
-	Test                         = []*discordgo.ApplicationCommand{}
 	permissionManageServer int64 = discordgo.PermissionManageServer
-	c                            = config.Load("config.json")
 )
 
+// DeployProd deploys all commands into production discord bot.
+func DeployProduction() {
+	config := config.Load("config-hk416.json")
+
+	s, err := discordgo.New("Bot " + config.Token)
+	if err != nil {
+		log.Fatalln(`Error setting up discord client:`, err)
+	}
+
+	registeredIndex, err := s.ApplicationCommandBulkOverwrite(config.ClientID, "", Index)
+	if err != nil {
+		log.Fatalln("Cannot create commands:", err)
+	}
+	log.Printf("Deployed %v slash production commands successfully to all servers.", len(registeredIndex))
+}
+
+// DeployProd deploys all commands into production discord bot.
 func DeployTest() {
-	s, err := discordgo.New("Bot " + c.Token)
+	config := config.Load("config.json")
+
+	s, err := discordgo.New("Bot " + config.Token)
 	if err != nil {
 		log.Fatalln(`Error setting up discord client:`, err)
 	}
 
-	registeredTest, err := s.ApplicationCommandBulkOverwrite(c.ClientID, c.GuildID, Test)
+	registeredIndex, err := s.ApplicationCommandBulkOverwrite(config.ClientID, config.GuildID, Index)
 	if err != nil {
 		log.Fatalln("Cannot create commands:", err)
 	}
-	log.Printf("Deployed %v slash commands successfully to test server.", len(registeredTest))
-}
-
-func DeployIndex() {
-	s, err := discordgo.New("Bot " + c.Token)
-	if err != nil {
-		log.Fatalln(`Error setting up discord client:`, err)
-	}
-
-	registeredIndex, err := s.ApplicationCommandBulkOverwrite(c.ClientID, "", Index)
-	if err != nil {
-		log.Fatalln("Cannot create commands:", err)
-	}
-	log.Printf("Deployed %v slash commands successfully to all servers.", len(registeredIndex))
-}
-
-func UndeployTest() {
-	s, err := discordgo.New("Bot " + c.Token)
-	if err != nil {
-		log.Fatalln(`Error setting up discord client:`, err)
-	}
-
-	_, err = s.ApplicationCommandBulkOverwrite(c.ClientID, c.GuildID, []*discordgo.ApplicationCommand{})
-	if err != nil {
-		log.Fatalln("Cannot create commands:", err)
-	}
-	log.Print("Undeployed all slash commands successfully from test server.")
-}
-
-func UndeployIndex() {
-	s, err := discordgo.New("Bot " + c.Token)
-	if err != nil {
-		log.Fatalln(`Error setting up discord client:`, err)
-	}
-
-	_, err = s.ApplicationCommandBulkOverwrite(c.ClientID, "", []*discordgo.ApplicationCommand{})
-	if err != nil {
-		log.Fatalln("Cannot create commands:", err)
-	}
-	log.Print("Undeployed all slash commands successfully from all server.")
+	log.Printf("Deployed %v slash test commands successfully to test server.", len(registeredIndex))
 }

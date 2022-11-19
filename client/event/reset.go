@@ -9,29 +9,27 @@ import (
 )
 
 func init() {
-	Index["stats"] = func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	Index["reset"] = func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+		go Setup()
 		err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Embeds: []*discordgo.MessageEmbed{
 					{
-						Title:       "Stats",
-						Description: fmt.Sprintf("Viewing %v's stats.", s.State.User.Username),
+						Title:       "Success",
+						Description: fmt.Sprintf("Reinitializing database variables for **%v**...", s.State.User.String()),
 						Color:       create.EmbedColor,
-						Fields: []*discordgo.MessageEmbedField{
-							{
-								Name:  "Presence In Guilds",
-								Value: fmt.Sprint(len(s.State.Guilds)),
-							},
-						},
+						Timestamp:   create.EmbedTimestamp,
+						Footer:      create.EmbedFooter(s),
 					},
 				},
+				Flags: discordgo.MessageFlagsEphemeral,
 			},
 		})
 		if err != nil {
 			log.Fatalln("interaction-respond:", err)
 		}
 
-		log.Printf("%v viewed %v's stats.", i.Member.User, s.State.User)
+		log.Printf("%v updated %v's memory data.", i.Member.User, s.State.User)
 	}
 }

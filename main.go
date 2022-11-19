@@ -5,8 +5,7 @@ import (
 )
 
 func main() {
-	// command.UndeployIndex()
+	// command.DeployProduction()
 	// command.DeployTest()
-	// command.DeployIndex()
 	client.Start()
 }

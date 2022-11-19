@@ -11,6 +11,12 @@ import (
 var (
 	EmbedTimestamp = time.Now().Format("2006-01-02T03:04:05-0700")
 	EmbedColor     = 13292010
+	EmbedFooter    = func(s *discordgo.Session) *discordgo.MessageEmbedFooter {
+		return &discordgo.MessageEmbedFooter{
+			Text:    s.State.User.Username,
+			IconURL: s.State.User.AvatarURL(""),
+		}
+	}
 )
 
 // DollEmbeds creates a Doll embed discord respond on a specific Doll.
@@ -26,10 +32,7 @@ func DollEmbeds(s *discordgo.Session, doll *info.DollProfile, page *string) []*d
 				Width:  256,
 				Height: 256,
 			},
-			Footer: &discordgo.MessageEmbedFooter{
-				Text:    s.State.User.Username,
-				IconURL: s.State.User.AvatarURL(""),
-			},
+			Footer: EmbedFooter(s),
 			Fields: DollEmbedFields(doll, page),
 		},
 	}

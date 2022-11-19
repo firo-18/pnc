@@ -101,8 +101,10 @@ func respondDollInfo(s *discordgo.Session, i *discordgo.InteractionCreate, name 
 				Embeds: []*discordgo.MessageEmbed{
 					{
 						Title:       "404 NOT FOUND",
-						Description: fmt.Sprintf("Data on requested Doll '%v' cannot be found.", name),
+						Description: fmt.Sprintf("Data on requested Doll **'%v'** cannot be found.", name),
 						Color:       create.EmbedColor,
+						Timestamp:   create.EmbedTimestamp,
+						Footer:      create.EmbedFooter(s),
 					},
 				},
 				Flags: discordgo.MessageFlagsEphemeral,
