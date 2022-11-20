@@ -4,7 +4,7 @@
 FROM golang:1.19-alpine as builder
 WORKDIR /app
 COPY . .
-RUN go build -race -o main
+RUN go build -o main
 
 # Run stage
 FROM alpine:3.16
