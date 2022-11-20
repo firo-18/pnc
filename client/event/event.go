@@ -6,10 +6,11 @@ import (
 )
 
 var (
-	Index   = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){}
-	DMu     = info.DollsMutex{Dolls: map[string]*info.DollProfile{}}
-	Classes = map[string][]*info.DollProfile{}
-	Meta    info.MetaData
+	Index     = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){}
+	DMu       = info.DollsMutex{Dolls: map[string]*info.DollProfile{}}
+	Classes   = map[string][]*info.DollProfile{}
+	ClassData = map[string]*info.ClassData{}
+	Meta      info.MetaData
 )
 
 func init() {
@@ -17,6 +18,7 @@ func init() {
 }
 
 func Setup() {
+	go fetchClassData()
 	Meta.Update()
 	fetchDolls()
 }
@@ -27,5 +29,13 @@ func fetchDolls() {
 		doll.Lookup(name)
 		go DMu.Write(doll)
 		Classes[doll.Class] = append(Classes[doll.Class], doll)
+	}
+}
+
+func fetchClassData() {
+	for _, v := range info.Classes {
+		cd := info.NewClassData()
+		cd.Lookup(v)
+		ClassData[cd.Name] = cd
 	}
 }

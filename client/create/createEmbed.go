@@ -116,31 +116,18 @@ func DollEmbedFields(doll *info.DollProfile, page *string) []*discordgo.MessageE
 }
 
 // ClassEmbeds creates a class embed discord respond on a specific Doll class.
-func ClassEmbeds(s *discordgo.Session, classes map[string][]*info.DollProfile, class *string) []*discordgo.MessageEmbed {
-	desc := ""
-	switch *class {
-	case "Guard":
-		desc = "Guards are your frontline tanks. They are your shields and your your most trustworthy allies. They also trust you to have their backs, so do keep them alive."
-	case "Medic":
-		desc = "Medics are your lifelines. They are the core of the group, so make sure you bring at least 1 Medic along, and make sure to pretect them well."
-	case "Sniper":
-		desc = "Snipers are range damage dealers. They are mainly stay at the very back focusing on defeating any enemies within their ranges."
-	case "Specialist":
-		desc = "Specialists are... well, specialists. Their specialities lie in buff, debuff, crowd-control, and status effect. Their arsenals are indispensable in some battles."
-	case "Warrior":
-		desc = "Warriors are frontline attackers. They adept at killing enemies at close-ranged. They are highly mobile, and are handy to quickly take out prioritized targets."
-	}
+func ClassEmbeds(s *discordgo.Session, classes map[string][]*info.DollProfile, classData *info.ClassData) []*discordgo.MessageEmbed {
 	embeds := []*discordgo.MessageEmbed{
 		{
-			Title:       *class,
-			Description: desc,
+			Title:       classData.Name,
+			Description: classData.Desc,
 			Timestamp:   EmbedTimestamp,
 			Color:       EmbedColor,
 			Footer: &discordgo.MessageEmbedFooter{
 				Text:    s.State.User.Username,
 				IconURL: s.State.User.AvatarURL(""),
 			},
-			Fields: ClassEmbedFields(classes[*class]),
+			Fields: ClassEmbedFields(classes[classData.Name]),
 		},
 	}
 
