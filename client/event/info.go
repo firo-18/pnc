@@ -61,7 +61,7 @@ func init() {
 				if len(data.Options[0].Options) > 1 {
 					choice = data.Options[0].Options[1].StringValue()
 					for k, v := range DMu.Dolls {
-						if v.Class == data.Options[0].Options[0].StringValue() {
+						if v.Bio.Class == data.Options[0].Options[0].StringValue() {
 							if ok, _ := regexp.MatchString("(?i)"+choice, k); ok {
 								choices = append(choices, &discordgo.ApplicationCommandOptionChoice{
 									Name:  k,

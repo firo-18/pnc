@@ -28,7 +28,7 @@ func fetchDolls() {
 		doll := info.NewDoll()
 		doll.Lookup(name)
 		go DMu.Write(doll)
-		Classes[doll.Class] = append(Classes[doll.Class], doll)
+		Classes[doll.Bio.Class] = append(Classes[doll.Bio.Class], doll)
 	}
 }
 

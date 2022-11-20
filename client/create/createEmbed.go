@@ -9,7 +9,8 @@ import (
 )
 
 var (
-	EmbedTimestamp = time.Now().Format("2006-01-02T03:04:05-0700")
+	dateFormat     = "2006-01-02T03:04:05-0700"
+	EmbedTimestamp = time.Now().Format(dateFormat)
 	EmbedColor     = 13292010
 	EmbedFooter    = func(s *discordgo.Session) *discordgo.MessageEmbedFooter {
 		return &discordgo.MessageEmbedFooter{
@@ -23,16 +24,16 @@ var (
 func DollEmbeds(s *discordgo.Session, doll *info.DollProfile, page *string) []*discordgo.MessageEmbed {
 	embeds := []*discordgo.MessageEmbed{
 		{
-			Title:     fmt.Sprintf("(%v) %v - %v", doll.Class, doll.Name, *page),
+			Title:     fmt.Sprintf("(%v) %v - %v", doll.Bio.Class, doll.Name, *page),
 			URL:       doll.Links.Wiki,
 			Timestamp: EmbedTimestamp,
 			Color:     EmbedColor,
+			Footer:    EmbedFooter(s),
 			Thumbnail: &discordgo.MessageEmbedThumbnail{
 				URL:    "https://raw.githubusercontent.com/firo-18/pnc-db/main/asset/dolls/icons/" + doll.Name + ".png",
 				Width:  256,
 				Height: 256,
 			},
-			Footer: EmbedFooter(s),
 			Fields: DollEmbedFields(doll, page),
 		},
 	}
@@ -48,24 +49,28 @@ func DollEmbedFields(doll *info.DollProfile, page *string) []*discordgo.MessageE
 	case "Bio":
 		fields = []*discordgo.MessageEmbedField{
 			{
-				Name:  "Model",
-				Value: DiscordStyle(doll.Model),
+				Name:  "Rarity",
+				Value: DiscordStyle(doll.Bio.Rarity),
 			},
 			{
-				Name:  "Birthday",
-				Value: DiscordStyle(doll.Birthday),
+				Name:  "Model",
+				Value: DiscordStyle(doll.Bio.Model),
 			},
 			{
 				Name:  "Manufacturer",
-				Value: DiscordStyle(doll.Manufacturer),
+				Value: DiscordStyle(doll.Bio.Manufacturer),
 			},
 			{
 				Name:  "Career",
-				Value: DiscordStyle(doll.Career),
+				Value: DiscordStyle(doll.Bio.Career),
+			},
+			{
+				Name:  "Birthday",
+				Value: DiscordStyle(doll.Bio.Birthday),
 			},
 			{
 				Name:  "Voice",
-				Value: DiscordStyle(doll.Voice),
+				Value: DiscordStyle(doll.Bio.Voice),
 			},
 		}
 	case "Skills":
@@ -123,11 +128,8 @@ func ClassEmbeds(s *discordgo.Session, classes map[string][]*info.DollProfile, c
 			Description: classData.Desc,
 			Timestamp:   EmbedTimestamp,
 			Color:       EmbedColor,
-			Footer: &discordgo.MessageEmbedFooter{
-				Text:    s.State.User.Username,
-				IconURL: s.State.User.AvatarURL(""),
-			},
-			Fields: ClassEmbedFields(classes[classData.Name]),
+			Footer:      EmbedFooter(s),
+			Fields:      ClassEmbedFields(classes[classData.Name]),
 		},
 	}
 

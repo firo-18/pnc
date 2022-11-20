@@ -17,7 +17,7 @@ type MetaData struct {
 // NewMetaData creates a new MetaData type with initial local data.
 func NewMetaData() *MetaData {
 	// Read dir for data json files
-	files, err := os.ReadDir(path.DollData)
+	files, err := os.ReadDir(Path.DollData)
 	if err != nil {
 		log.Fatalln("read-dir:", err)
 	}
@@ -27,7 +27,7 @@ func NewMetaData() *MetaData {
 	// Loop over all files found
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".yaml") {
-			data, err := os.ReadFile(path.DollData + file.Name())
+			data, err := os.ReadFile(Path.DollData + file.Name())
 			if err != nil {
 				log.Fatalln("read-file:", err)
 			}
@@ -48,7 +48,7 @@ func NewMetaData() *MetaData {
 
 // Update fetches and read into memory the latest meta file in databse.
 func (m *MetaData) Update() {
-	err := api.GetDecodeYAML(path.Root+"meta.yaml", m)
+	err := api.GetDecodeYAML(Path.Root+"meta.yaml", m)
 	if err != nil {
 		log.Fatalln("decode:", err)
 	}

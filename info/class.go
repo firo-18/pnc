@@ -30,14 +30,14 @@ func (c ClassData) Write() {
 		log.Fatalln("marshal:", err)
 	}
 
-	err = os.WriteFile(path.ClassData+c.Name+".yaml", data, 0600)
+	err = os.WriteFile(Path.ClassData+c.Name+".yaml", data, 0600)
 	if err != nil {
 		log.Fatalln("write-file:", err)
 	}
 }
 
 func (c *ClassData) Lookup(name string) error {
-	url := path.Root + path.ClassData + name + ".yaml"
+	url := Path.Root + Path.ClassData + name + ".yaml"
 
 	err := api.GetDecodeYAML(url, c)
 

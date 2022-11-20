@@ -9,7 +9,7 @@ type DBPath struct {
 }
 
 var (
-	path = DBPath{
+	Path = DBPath{
 		Root:      "https://raw.githubusercontent.com/firo-18/pnc-db/main/",
 		DollData:  "data/dolls/",
 		DollIcon:  "asset/dolls/icons/",
