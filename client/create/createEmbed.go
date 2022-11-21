@@ -2,6 +2,7 @@ package create
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -50,7 +51,7 @@ func DollEmbedFields(doll *info.DollProfile, page *string) []*discordgo.MessageE
 		fields = []*discordgo.MessageEmbedField{
 			{
 				Name:  "Rarity",
-				Value: DiscordStyle(doll.Bio.Rarity),
+				Value: DiscordStyle(strconv.Itoa(int(doll.Bio.Rarity))),
 			},
 			{
 				Name:  "Model",

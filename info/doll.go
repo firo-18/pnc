@@ -21,7 +21,7 @@ type DollProfile struct {
 
 // DollBio lits all the relevant bio data on a Doll.
 type DollBio struct {
-	Rarity       string    `json:"rarity" yaml:"rarity"`
+	Rarity       byte      `json:"rarity" yaml:"rarity"`
 	Class        string    `json:"class" yaml:"class"`
 	Model        string    `json:"model" yaml:"model"`
 	Manufacturer string    `json:"manufacturer" yaml:"manufacturer"`
