@@ -24,6 +24,7 @@ func Setup() {
 }
 
 func fetchDolls() {
+	Classes = map[string][]*info.DollProfile{}
 	for _, name := range Meta.Dolls {
 		doll := info.NewDoll()
 		doll.Lookup(name)
